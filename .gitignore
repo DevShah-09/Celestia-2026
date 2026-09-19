@@ -8,3 +8,4 @@ test-results/
 playwright-report/
 .DS_Store
 /backend/scripts/createAdmin.local.js
+/backend/registration-log-*.json

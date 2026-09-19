@@ -37,7 +37,7 @@ export default function AdminLayout() {
       <button className="portal-button secondary" onClick={() => saveAdmin(null)}>Sign out</button>
     </> : !['admin', 'superadmin'].includes(profile.role) ? <><h1>Access denied</h1><p>An organizer account is required.</p><button className="portal-button" onClick={() => saveAdmin(null)}>Sign out</button></> : <>
       <div className="portal-heading"><p className="portal-eyebrow">ORGANIZER · {profile.name}</p><button className="portal-button secondary" onClick={() => saveAdmin(null)}>Sign out</button></div>
-      <nav className="admin-tabs" aria-label="Organizer navigation">{[['/admin', 'Overview'], ['/admin/register', 'Register team'], ['/admin/scoring', 'Scoring / QR'], ['/admin/bulkupdate', 'Bulk scoring']].map(([to, title]) => <NavLink key={to} to={to} end>{title}</NavLink>)}</nav>
+      <nav className="admin-tabs" aria-label="Organizer navigation">{[['/admin', 'Overview'], ['/admin/games', 'Games'], ['/admin/register', 'Register team'], ['/admin/scoring', 'Scoring / QR'], ['/admin/bulkupdate', 'Bulk scoring']].map(([to, title]) => <NavLink key={to} to={to} end>{title}</NavLink>)}</nav>
       <Outlet context={{ profile, request }} />
     </>}
   </section></PageShell>;

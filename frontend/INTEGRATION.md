@@ -15,6 +15,7 @@ To use another API, copy `.env.example` to `.env.local` and set `VITE_BACKEND_UR
 - `/teamprogress`: signed-in team's score, per-game statistics, searchable games, and activity including deductions.
 - `/admin/login`: administrator email/password login.
 - `/admin`: server-verified admin profile, expired-session handling, and sign-out.
+- `/admin/games`: authenticated game creation and active game list.
 - `/admin/register`: authenticated team registration, downloadable QR code, and email-delivery status.
 - `/admin/scoring`: game selection, team-ID verification, camera/image QR scanning, and explicit points award.
 - `/admin/bulkupdate`: multiple score additions/deductions, optional game association, and per-team results. Successful rows are removed; failed rows remain for correction.

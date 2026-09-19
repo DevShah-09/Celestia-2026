@@ -3,6 +3,51 @@ import path from 'node:path';
 const team = { teamId: 1000, teamName: 'Star Rangers', leaderName: 'Avery', totalPoints: 35 };
 const game = { _id: 'game1', gameName: 'Memory Maze', gamePoints: 20 };
 const reply = (route, data, status = 200, message = 'Success') => route.fulfill({ status, json: { data, message } });
+
+test('games navigation creates a game with admin authorization and makes it available for scoring', async ({ page }) => {
+  const games = [game];
+  await page.route('**/api/games', route => {
+    if (route.request().method() === 'POST') {
+      expect(route.request().headers().authorization).toBe('Bearer organizer-token');
+      expect(route.request().postDataJSON()).toEqual({ gameName: 'Treasure Hunt', gamePoints: 100, description: 'Find clues' });
+      const created = { _id: 'game2', ...route.request().postDataJSON() };
+      games.push(created);
+      return reply(route, created, 201);
+    }
+    return reply(route, games);
+  });
+  await page.goto('/admin/games');
+  await expect(page.getByRole('link', { name: 'Games', exact: true })).toHaveAttribute('aria-current', 'page');
+  await page.getByLabel('Game name', { exact: true }).fill('Treasure Hunt');
+  await page.getByLabel('Points per completion').fill('100');
+  await page.getByLabel('Description (optional)').fill('Find clues');
+  await page.getByRole('button', { name: 'Create game', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Treasure Hunt created');
+  await expect(page.getByRole('row').filter({ hasText: 'Treasure Hunt' })).toContainText('100');
+  await expect(page.getByLabel('Game name', { exact: true })).toHaveValue('');
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.screenshot({ path: 'test-results/games-mobile.png', fullPage: true });
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBeTruthy();
+  await page.getByRole('link', { name: 'Scoring / QR', exact: true }).click();
+  await page.getByLabel('Game', { exact: true }).selectOption('game2');
+});
+
+test('game creation preserves inputs on duplicate name and handles expired sessions', async ({ page }) => {
+  let expired = false;
+  await page.route('**/api/games', route => route.request().method() === 'POST'
+    ? reply(route, null, expired ? 401 : 409, expired ? 'Token expired' : 'Game already exists')
+    : reply(route, [game]));
+  await page.goto('/admin/games');
+  await page.getByLabel('Game name', { exact: true }).fill('Memory Maze');
+  await page.getByLabel('Points per completion').fill('20');
+  await page.getByRole('button', { name: 'Create game', exact: true }).click();
+  await expect(page.getByRole('alert')).toHaveText('Game already exists');
+  await expect(page.getByLabel('Game name', { exact: true })).toHaveValue('Memory Maze');
+  expired = true;
+  await page.getByRole('button', { name: 'Create game', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'Session expired' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Create game', exact: true })).toHaveCount(0);
+});
 test.beforeEach(async ({ page }) => {
   await page.addInitScript(() => sessionStorage.setItem('celestia.admin', JSON.stringify({ token: 'organizer-token', admin: { role: 'admin' } })));
   await page.route('**/api/**', route => {
@@ -16,7 +61,7 @@ test.beforeEach(async ({ page }) => {
 });
 test('all organizer routes reject unauthenticated access', async ({ browser }) => {
   const page = await browser.newPage();
-  for (const route of ['/admin/register', '/admin/scoring', '/admin/bulkupdate']) {
+  for (const route of ['/admin/register', '/admin/scoring', '/admin/bulkupdate', '/admin/games']) {
     await page.goto(`http://127.0.0.1:5178${route}`);
     await expect(page).toHaveURL(/\/admin\/login$/);
   }

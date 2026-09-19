@@ -53,15 +53,15 @@ export const sendRegistrationEmail = async (
 
     const mailOptions = {
       from: {
-        name: "Celestia 2025",
+        name: "Celestia 2026",
         address: process.env.EMAIL_USER,
       },
       to: leaderEmail,
-      subject: "Celestia 2025 - Team Registration Successful! 🌟",
+      subject: "Celestia 2026 - Team Registration Successful! 🌟",
       html: `
                 <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px;">
                     <div style="background: white; padding: 30px; border-radius: 10px; text-align: center;">
-                        <h1 style="color: #764ba2; margin-bottom: 20px;">🌙 Welcome to Celestia 2025! 🌙</h1>
+                        <h1 style="color: #764ba2; margin-bottom: 20px;">🌙 Welcome to Celestia 2026! 🌙</h1>
                         
                         <h2 style="color: #333; margin-bottom: 30px;">Registration Successful!</h2>
                         
@@ -100,7 +100,7 @@ export const sendRegistrationEmail = async (
                         
                         <div style="margin-top: 30px; padding-top: 20px; border-top: 2px solid #764ba2;">
                             <p style="color: #666; font-size: 12px;">
-                                This is an automated email from Celestia 2025. Please do not reply to this email.
+                                This is an automated email from Celestia 2026. Please do not reply to this email.
                             </p>
                         </div>
                     </div>

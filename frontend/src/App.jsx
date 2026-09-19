@@ -9,6 +9,7 @@ import AdminLayout from './components/AdminLayout';
 import RegisterTeam from './pages/RegisterTeam';
 import Scoring from './pages/Scoring';
 import BulkScoring from './pages/BulkScoring';
+import Games from './pages/Games';
 import { SessionProvider } from './lib/session';
 import './styles/portal.css';
 
@@ -26,6 +27,7 @@ export default function App() {
           <Route path="register" element={<RegisterTeam />} />
           <Route path="scoring" element={<Scoring />} />
           <Route path="bulkupdate" element={<BulkScoring />} />
+          <Route path="games" element={<Games />} />
         </Route>
       </Routes>
     </BrowserRouter></SessionProvider>

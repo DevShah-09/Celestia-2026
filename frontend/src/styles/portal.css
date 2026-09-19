@@ -60,3 +60,6 @@ html, body { height: auto; }
   .portal-stats > div { display: flex; align-items: center; justify-content: space-between; padding: 14px; }
   .portal-table th, .portal-table td { padding: 12px 8px; font-size: 14px; }
 }
+
+.portal-form textarea { width: 100%; min-width: 0; color: white; background: #061b3e; border: 1px solid #6dadd5; border-radius: 8px; padding: 13px; font: inherit; resize: vertical; user-select: text; }
+.portal-form textarea:focus { outline: 3px solid var(--pixel-cyan); outline-offset: 2px; }
