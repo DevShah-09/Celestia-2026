@@ -18,7 +18,7 @@ router.post("/login", participantController.loginParticipant);
 router.get("/:teamId", participantController.getParticipantByTeamId);
 
 // Get all participants (admin)
-router.get("/", participantController.getAllParticipants);
+router.get("/", authenticateAdmin, participantController.getAllParticipants);
 
 // Get leaderboard
 router.get("/leaderboard/top", participantController.getLeaderboard);

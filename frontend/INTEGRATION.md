@@ -15,10 +15,14 @@ To use another API, copy `.env.example` to `.env.local` and set `VITE_BACKEND_UR
 - `/teamprogress`: signed-in team's score, per-game statistics, searchable games, and activity including deductions.
 - `/admin/login`: administrator email/password login.
 - `/admin`: server-verified admin profile, expired-session handling, and sign-out.
-- `/admin/games`: authenticated game creation and active game list.
-- `/admin/register`: authenticated team registration, downloadable QR code, and email-delivery status.
-- `/admin/scoring`: game selection, team-ID verification, camera/image QR scanning, and explicit points award.
+- `/admin/games`: authenticated game creation, editing, deactivation, and active game list.
+- `/admin/register`: single-team registration and CSV upload with preview, validation, sequential import, per-row results, and downloadable QR codes. CSVs support quoted fields and require the headers in the downloadable template (up to 500 teams / 1 MB). Failed delivery does not undo registration. Unknown request outcomes stop the import for manual verification in Teams.
+- `/admin/scoring`: game selection, team-ID verification, camera/image QR scanning, and confirmed awards or deductions.
 - `/admin/bulkupdate`: multiple score additions/deductions, optional game association, and per-team results. Successful rows are removed; failed rows remain for correction.
+
+- `/admin/teams`: protected team directory, leader contact details, search, and existing QR downloads.
+- `/admin/history`: event-wide points history, organizer/team/game search, awards/deductions filters, and net totals.
+- `/admin/admins`: account list and per-admin activity logs for all organizers. Only `superadmin` accounts can create or deactivate admins; regular `admin` accounts can review activity. Self-deactivation is blocked; the existing seven-account limit includes inactive accounts.
 
 All organizer pages share a protected layout. It verifies the bearer token against `/admin/profile`, checks the current server role, and hides the forms if any authenticated request reports an expired session. The backend also checks that the account remains active with an organizer role.
 

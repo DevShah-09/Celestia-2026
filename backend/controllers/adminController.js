@@ -184,6 +184,9 @@ export const getAdminActivityLogs = async (req, res) => {
 export const deactivateAdmin = async (req, res) => {
   try {
     const { adminId } = req.params;
+    if (String(adminId) === String(req.adminId)) {
+      return res.status(400).json(formatResponse(null, "You cannot deactivate your own account", 400));
+    }
 
     const admin = await Admin.findByIdAndUpdate(
       adminId,
@@ -215,9 +218,10 @@ export const getAdminPointsHistory = async (req, res) => {
         pointsHistory.push({
           teamId: participant.teamId,
           teamName: participant.teamName,
-          gameId: progress.gameId._id,
-          gameName: progress.gameId.gameName,
-          gamePoints: progress.gameId.gamePoints,
+          gameId: progress.gameId?._id?.toString() || null,
+          gameName: progress.gameId?.gameName || (progress.points < 0 ? "Points deduction" : "Points adjustment"),
+          gamePoints: progress.gameId?.gamePoints || 0,
+          reason: progress.penalty?.reason || "",
           pointsAwarded: progress.points,
           assignedAt: progress.completedAt,
           assignedBy: {
@@ -235,9 +239,9 @@ export const getAdminPointsHistory = async (req, res) => {
     );
 
     // Generate summary statistics
-    const adminStats = {};
-    const teamStats = {};
-    const gameStats = {};
+    const adminStats = Object.create(null);
+    const teamStats = Object.create(null);
+    const gameStats = Object.create(null);
 
     pointsHistory.forEach((entry) => {
       const adminName = entry.assignedBy.adminName;
@@ -257,7 +261,7 @@ export const getAdminPointsHistory = async (req, res) => {
       adminStats[adminName].totalPointsAssigned += entry.pointsAwarded;
       adminStats[adminName].totalAssignments++;
       adminStats[adminName].uniqueTeams.add(entry.teamId);
-      adminStats[adminName].uniqueGames.add(entry.gameId);
+      if (entry.gameId) adminStats[adminName].uniqueGames.add(entry.gameId);
 
       // Team statistics
       if (!teamStats[entry.teamId]) {
@@ -271,10 +275,12 @@ export const getAdminPointsHistory = async (req, res) => {
         };
       }
       teamStats[entry.teamId].totalPointsReceived += entry.pointsAwarded;
-      teamStats[entry.teamId].totalGamesCompleted++;
+      if (entry.gameId && entry.pointsAwarded >= 0) teamStats[entry.teamId].totalGamesCompleted++;
       teamStats[entry.teamId].uniqueAdmins.add(adminName);
-      teamStats[entry.teamId].uniqueGames.add(entry.gameId);
+      if (entry.gameId) teamStats[entry.teamId].uniqueGames.add(entry.gameId);
 
+      // Adjustments without a game are retained in history but not counted as games.
+      if (!entry.gameId) return;
       // Game statistics
       if (!gameStats[entry.gameId]) {
         gameStats[entry.gameId] = {
@@ -288,7 +294,7 @@ export const getAdminPointsHistory = async (req, res) => {
         };
       }
       gameStats[entry.gameId].totalPointsAwarded += entry.pointsAwarded;
-      gameStats[entry.gameId].totalCompletions++;
+      if (entry.pointsAwarded >= 0) gameStats[entry.gameId].totalCompletions++;
       gameStats[entry.gameId].uniqueTeams.add(entry.teamId);
       gameStats[entry.gameId].uniqueAdmins.add(adminName);
     });
@@ -358,7 +364,7 @@ export const subtractPointsByQR = async (req, res) => {
         );
     }
 
-    if (points <= 0) {
+    if (!Number.isSafeInteger(points) || points <= 0) {
       return res
         .status(400)
         .json(formatResponse(null, "Points must be greater than 0", 400));
@@ -440,6 +446,7 @@ export const subtractPointsByQR = async (req, res) => {
 export const subtractPointsByTeamId = async (req, res) => {
   try {
     const { teamId, points, reason } = req.body;
+    if (!Number.isSafeInteger(points) || points <= 0) return res.status(400).json(formatResponse(null, "Points must be a positive whole number", 400));
     console.log("Subtract Points Request:", { teamId, points, reason });
 
     if (!teamId || !points) {

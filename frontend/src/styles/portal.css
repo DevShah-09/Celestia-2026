@@ -63,3 +63,8 @@ html, body { height: auto; }
 
 .portal-form textarea { width: 100%; min-width: 0; color: white; background: #061b3e; border: 1px solid #6dadd5; border-radius: 8px; padding: 13px; font: inherit; resize: vertical; user-select: text; }
 .portal-form textarea:focus { outline: 3px solid var(--pixel-cyan); outline-offset: 2px; }
+
+.portal-form select { width: 100%; min-width: 0; color: white; background: #061b3e; border: 1px solid #6dadd5; border-radius: 8px; padding: 13px; font: inherit; }
+.table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.table-actions .portal-button { padding: 8px 12px; font-size: 14px; }
+.portal-table-wrap { max-width: 100%; }

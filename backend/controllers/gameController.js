@@ -77,7 +77,12 @@ export const getGameById = async (req, res) => {
 export const updateGame = async (req, res) => {
   try {
     const { gameId } = req.params;
-    const updateData = req.body;
+    const updateData = Object.fromEntries(['gameName', 'gamePoints', 'description'].filter(key => req.body[key] !== undefined).map(key => [key, req.body[key]]));
+    if (updateData.gameName !== undefined) {
+      if (typeof updateData.gameName !== 'string' || !updateData.gameName.trim()) return res.status(400).json(formatResponse(null, 'Game name is required', 400));
+      updateData.gameName = updateData.gameName.trim();
+    }
+    if (updateData.gamePoints !== undefined && (!Number.isSafeInteger(updateData.gamePoints) || updateData.gamePoints <= 0)) return res.status(400).json(formatResponse(null, 'Points must be a positive whole number', 400));
 
     // Add admin info to update
     updateData.updatedBy = {
@@ -106,6 +111,7 @@ export const updateGame = async (req, res) => {
       )
     );
   } catch (error) {
+    if (error.code === 11000) return res.status(409).json(formatResponse(null, "Game already exists", 409));
     handleError(error, res);
   }
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Navigate, NavLink, Outlet, useOutletContext } from 'react-router-dom';
 import PageShell from './PageShell';
 import { api } from '../lib/api';
@@ -23,13 +23,13 @@ export default function AdminLayout() {
     });
     return () => { active = false; };
   }, [admin?.token, retry]);
-  async function request(path, options = {}) {
+  const request = useCallback(async (path, options = {}) => {
     try { return await api(path, { ...options, token: admin.token }); }
     catch (failure) {
       if ([401, 403].includes(failure.status)) setExpired(true);
       throw failure;
     }
-  }
+  }, [admin?.token]);
   if (!admin?.token) return <Navigate to="/admin/login" replace />;
   return <PageShell><section className="portal-panel">
     {expired ? <><h1>Session expired</h1><p>Please sign in again to continue.</p><button className="portal-button" onClick={() => saveAdmin(null)}>Return to login</button></> : !profile ? <>
@@ -37,7 +37,7 @@ export default function AdminLayout() {
       <button className="portal-button secondary" onClick={() => saveAdmin(null)}>Sign out</button>
     </> : !['admin', 'superadmin'].includes(profile.role) ? <><h1>Access denied</h1><p>An organizer account is required.</p><button className="portal-button" onClick={() => saveAdmin(null)}>Sign out</button></> : <>
       <div className="portal-heading"><p className="portal-eyebrow">ORGANIZER · {profile.name}</p><button className="portal-button secondary" onClick={() => saveAdmin(null)}>Sign out</button></div>
-      <nav className="admin-tabs" aria-label="Organizer navigation">{[['/admin', 'Overview'], ['/admin/games', 'Games'], ['/admin/register', 'Register team'], ['/admin/scoring', 'Scoring / QR'], ['/admin/bulkupdate', 'Bulk scoring']].map(([to, title]) => <NavLink key={to} to={to} end>{title}</NavLink>)}</nav>
+      <nav className="admin-tabs" aria-label="Organizer navigation">{[['/admin', 'Overview'], ['/admin/games', 'Games'], ['/admin/register', 'Register team'], ['/admin/scoring', 'Scoring / QR'], ['/admin/bulkupdate', 'Bulk scoring'], ['/admin/teams', 'Teams'], ['/admin/history', 'History'], ['/admin/admins', 'Admins']].map(([to, title]) => <NavLink key={to} to={to} end>{title}</NavLink>)}</nav>
       <Outlet context={{ profile, request }} />
     </>}
   </section></PageShell>;

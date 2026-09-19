@@ -1,6 +1,6 @@
 import express from "express";
 import { adminController } from "../controllers/index.js";
-import { authenticateAdmin, logActivity } from "../middleware/auth.js";
+import { authenticateAdmin, requireSuperAdmin, logActivity } from "../middleware/auth.js";
 
 const router = express.Router();
 
@@ -8,7 +8,7 @@ router.post("/login", adminController.loginAdmin);
 
 router.get("/profile", authenticateAdmin, adminController.getAdminProfile);
 
-router.post("/create", authenticateAdmin, adminController.createAdmin);
+router.post("/create", authenticateAdmin, requireSuperAdmin, adminController.createAdmin);
 
 router.get("/all", authenticateAdmin, adminController.getAllAdmins);
 
@@ -21,6 +21,7 @@ router.get(
 router.patch(
   "/deactivate/:adminId",
   authenticateAdmin,
+  requireSuperAdmin,
   adminController.deactivateAdmin
 );
 

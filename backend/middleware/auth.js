@@ -43,4 +43,11 @@ export const logActivity = (action) => {
   };
 };
 
-export default { authenticateAdmin, logActivity };
+export const requireSuperAdmin = (req, res, next) => {
+  if (req.adminRole !== 'superadmin') {
+    return res.status(403).json({ message: 'Only a superadmin can manage admin accounts.' });
+  }
+  next();
+};
+
+export default { authenticateAdmin, logActivity, requireSuperAdmin };

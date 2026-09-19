@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useAdmin } from '../components/AdminLayout';
+import CsvRegistration from '../components/CsvRegistration';
 export default function RegisterTeam() {
   const { request } = useAdmin();
   const [busy, setBusy] = useState(false);
@@ -28,5 +29,5 @@ export default function RegisterTeam() {
       <label>Leader email<input name="leaderEmail" type="email" required autoComplete="email" /></label>
       <label>Team size<input name="teamSize" type="number" min="1" step="1" required /></label>
       <button className="portal-button" type="submit">{busy ? 'Registering…' : 'Register team'}</button>
-    </fieldset></form></>;
+    </fieldset></form><CsvRegistration /></>;
 }
