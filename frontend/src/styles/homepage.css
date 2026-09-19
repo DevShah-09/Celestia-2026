@@ -1,0 +1,862 @@
+/* =========================================================
+       CELESTIA 16-BIT PIXEL ART STYLESHEET
+       ========================================================= */
+    :root {
+      --gold-primary: #facc15;
+      --gold-light: #fef08a;
+      --gold-dark: #854d0e;
+      --neon-purple: #7c3aed;
+      --neon-pink: #ec4899;
+      --neon-cyan: #06b6d4;
+      --font-pixel: 'Press Start 2P', monospace;
+      --font-display: 'Silkscreen', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-font-smoothing: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background-color: #38bdf8;
+      font-family: var(--font-pixel);
+      color: #ffffff;
+    }
+
+    /* Master World Container with Background Image */
+    .celestia-world {
+      position: relative;
+      width: 100%;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background: url('../assets/homepage/bg.jpg') center bottom / cover no-repeat;
+    }
+
+    /* =========================================================
+       SUN SHINING RAYS, HALO & LIGHT INSECTS (FIREFLIES)
+       ========================================================= */
+    .sun-shining-rays {
+      position: absolute;
+      top: 35%;
+      left: 58%;
+      transform: translate(-50%, -50%);
+      width: 560px;
+      height: 560px;
+      border-radius: 50%;
+      background: conic-gradient(
+        from 0deg,
+        rgba(255, 240, 150, 0.08) 0deg 20deg,
+        transparent 20deg 45deg,
+        rgba(255, 240, 150, 0.13) 45deg 65deg,
+        transparent 65deg 90deg,
+        rgba(255, 240, 150, 0.07) 90deg 110deg,
+        transparent 110deg 135deg,
+        rgba(255, 240, 150, 0.12) 135deg 155deg,
+        transparent 155deg 180deg,
+        rgba(255, 240, 150, 0.08) 180deg 200deg,
+        transparent 200deg 225deg,
+        rgba(255, 240, 150, 0.13) 225deg 245deg,
+        transparent 245deg 270deg,
+        rgba(255, 240, 150, 0.07) 270deg 290deg,
+        transparent 290deg 315deg,
+        rgba(255, 240, 150, 0.11) 315deg 335deg,
+        transparent 335deg 360deg
+      );
+      pointer-events: none;
+      animation: sunRaysRotate 45s infinite linear;
+      z-index: 4;
+    }
+
+    @keyframes sunRaysRotate {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .sun-glow-overlay {
+      position: absolute;
+      top: 35%;
+      left: 58%;
+      transform: translate(-50%, -50%);
+      width: 230px;
+      height: 230px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(254, 240, 138, 0.5) 0%, rgba(250, 204, 21, 0.22) 42%, rgba(253, 224, 71, 0.08) 65%, transparent 78%);
+      pointer-events: none;
+      animation: sunAura 3.5s infinite alternate ease-in-out;
+      z-index: 5;
+    }
+
+    @keyframes sunAura {
+      0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.7; }
+      100% { transform: translate(-50%, -50%) scale(1.18); opacity: 1; }
+    }
+
+    /* Small Light Insects (Fireflies) */
+    .light-insects-container {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 8;
+    }
+
+    .light-insect {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: #fef08a;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #facc15, 0 0 14px rgba(254, 240, 138, 0.9);
+      pointer-events: none;
+      animation: insectGlow 1.8s infinite alternate ease-in-out, insectDrift var(--drift-time, 9s) infinite ease-in-out;
+    }
+
+    @keyframes insectGlow {
+      0% {
+        transform: scale(0.6);
+        opacity: 0.3;
+        box-shadow: 0 0 4px #facc15;
+      }
+      50% {
+        transform: scale(1.25);
+        opacity: 1;
+        box-shadow: 0 0 10px #fef08a, 0 0 18px #facc15;
+      }
+      100% {
+        transform: scale(0.8);
+        opacity: 0.5;
+        box-shadow: 0 0 6px #facc15;
+      }
+    }
+
+    @keyframes insectDrift {
+      0% {
+        transform: translate(0, 0);
+      }
+      25% {
+        transform: translate(var(--dx1, 15px), var(--dy1, -20px));
+      }
+      50% {
+        transform: translate(var(--dx2, -20px), var(--dy2, -35px));
+      }
+      75% {
+        transform: translate(var(--dx3, 25px), var(--dy3, -15px));
+      }
+      100% {
+        transform: translate(0, 0);
+      }
+    }
+
+    /* =========================================================
+       DJS UNICODE TOP-RIGHT LOGO (NESTLED IN CLOUDS)
+       ========================================================= */
+    .pv-top-logo {
+      position: fixed;
+      top: clamp(14px, 2.5vh, 28px);
+      right: clamp(16px, 3vw, 36px);
+      z-index: 35;
+      pointer-events: auto;
+      filter: drop-shadow(0 4px 14px rgba(0, 0, 0, 0.25));
+      transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), filter 0.3s ease;
+      cursor: pointer;
+    }
+
+    .pv-top-logo:hover {
+      transform: scale(1.08) rotate(3deg);
+      filter: drop-shadow(0 6px 18px rgba(255, 255, 255, 0.7));
+    }
+
+    .pv-top-logo-img {
+      width: clamp(48px, 6vw, 76px);
+      height: clamp(48px, 6vw, 76px);
+      border-radius: 50%;
+      display: block;
+      object-fit: contain;
+    }
+
+    /* =========================================================
+       CLASSIC WOODEN SLINGSHOT (ANGRY BIRDS ENTRANCE)
+       ========================================================= */
+    .pv-slingshot-container {
+      position: fixed;
+      left: clamp(28px, 5vw, 75px);
+      top: clamp(42%, 48vh, 54%);
+      width: clamp(60px, 8vw, 105px);
+      height: clamp(94px, 12.5vw, 164px);
+      z-index: 40;
+      pointer-events: none;
+      transition: opacity 0.6s ease-out;
+      will-change: opacity, transform;
+    }
+
+    .pv-slingshot-container.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .pv-slingshot-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+      filter: drop-shadow(2px 5px 8px rgba(0, 0, 0, 0.5));
+    }
+
+    /* Tension Quiver while loaded in slingshot */
+    .pv-slingshot-container.tension {
+      animation: slingshotTension 0.12s infinite alternate ease-in-out;
+    }
+
+    @keyframes slingshotTension {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(-1.5px, 1px) rotate(-1deg); }
+    }
+
+    /* Rubber Band Snap Recoil Animation */
+    .slingshot-recoil {
+      animation: bandSnapRecoil 0.35s ease-out;
+    }
+
+    @keyframes bandSnapRecoil {
+      0% { transform: scaleX(1.3) translateY(-4px); }
+      35% { transform: scaleX(0.85) translateY(3px); }
+      70% { transform: scaleX(1.08) translateY(-1px); }
+      100% { transform: scaleX(1) translateY(0); }
+    }
+
+    /* Aiming Trajectory Dots */
+    .pv-aiming-dots {
+      position: absolute;
+      left: 54%;
+      top: 20%;
+      display: flex;
+      gap: clamp(8px, 1.5vw, 16px);
+      pointer-events: none;
+      opacity: 0.9;
+      transition: opacity 0.25s ease;
+      z-index: 39;
+    }
+
+    .pv-aiming-dot {
+      width: clamp(5px, 0.8vw, 8px);
+      height: clamp(5px, 0.8vw, 8px);
+      background: #fde047;
+      border: 1.5px solid #000;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #facc15;
+      animation: aimingDotPulse 0.7s infinite alternate ease-in-out;
+    }
+
+    .pv-aiming-dot:nth-child(1) { transform: translateY(-5px); animation-delay: 0s; }
+    .pv-aiming-dot:nth-child(2) { transform: translateY(-16px); animation-delay: 0.15s; }
+    .pv-aiming-dot:nth-child(3) { transform: translateY(-27px); animation-delay: 0.3s; }
+    .pv-aiming-dot:nth-child(4) { transform: translateY(-36px); animation-delay: 0.45s; }
+
+    @keyframes aimingDotPulse {
+      0% { opacity: 0.35; transform: scale(0.8); }
+      100% { opacity: 1; transform: scale(1.25); }
+    }
+
+    /* =========================================================
+       REALISTIC ANGRY BIRD (IN FRONT OF CELESTIA LOGO)
+       Layering: background → CELESTIA 3D depth → CELESTIA face → bird in front
+       ========================================================= */
+    .pv-angry-bird-wrapper {
+      position: fixed;
+      z-index: 50;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      pointer-events: auto;
+      will-change: transform, left, top;
+      opacity: 0;
+    }
+
+    .pv-angry-bird-wrapper:hover {
+      filter: brightness(1.15);
+    }
+
+    .pv-angry-bird-wrapper.boost {
+      animation: birdSpinBoost 0.7s ease-in-out;
+    }
+
+    @keyframes birdSpinBoost {
+      0% { transform: rotate(0deg) scale(1.1); }
+      50% { transform: rotate(360deg) scale(1.3); }
+      100% { transform: rotate(720deg) scale(1); }
+    }
+
+    .pv-angry-bird-svg {
+      filter: drop-shadow(4px 6px 10px rgba(0, 0, 0, 0.6));
+    }
+
+    .bird-wing.wing-up {
+      transform: translateY(-5px) rotate(18deg);
+    }
+
+    .bird-wing.wing-down {
+      transform: translateY(3px) rotate(-14deg);
+    }
+
+    .angry-bird-trail {
+      position: absolute;
+      left: -28px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .trail-line {
+      height: 3px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 2px;
+      animation: trailFlicker 0.2s infinite alternate;
+    }
+    .line-1 { width: 30px; }
+    .line-2 { width: 40px; }
+    .line-3 { width: 22px; }
+
+    @keyframes trailFlicker {
+      0% { opacity: 0.4; }
+      100% { opacity: 0.95; }
+    }
+
+    /* Pixel Sparkles generated when revealing the logo */
+    .pixel-spark-particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 46;
+      font-family: var(--font-pixel);
+      font-size: 14px;
+      font-weight: bold;
+      color: #fde047;
+      text-shadow: 0 0 6px #facc15, 1px 1px 0 #000;
+      animation: sparkFloat 0.7s forwards ease-out;
+    }
+
+    @keyframes sparkFloat {
+      0% { transform: translate(0, 0) scale(1.3); opacity: 1; }
+      100% { transform: translate(var(--dx, 15px), var(--dy, -25px)) scale(0.3); opacity: 0; }
+    }
+
+
+    /* =========================================================
+       CENTER HERO: 3D "CELESTIA" TITLE & PIXEL REVEAL
+       ========================================================= */
+    .pv-main-stage {
+      position: relative;
+      z-index: 25;
+      width: 100%;
+      max-width: 100vw;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px 16px;
+      box-sizing: border-box;
+    }
+
+    .pv-hero-center {
+      position: relative;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+      max-width: 1000px;
+    }
+
+    /* Top Presenter Tagline: Djs Unicode presents */
+    .pv-hero-tagline-top {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      margin-bottom: clamp(16px, 2.5vw, 24px);
+      max-width: 95vw;
+      opacity: 1;
+      transform: translateY(0);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+    }
+
+    .tagline-brand {
+      font-family: var(--font-pixel);
+      font-size: clamp(10.5px, 1.5vw, 16px);
+      font-weight: 900;
+      letter-spacing: clamp(2px, 0.4vw, 4px);
+      color: #0f172a;
+      text-transform: uppercase;
+      text-shadow: 
+        1px 1px 0 #fff, 
+        -1px -1px 0 #fff, 
+        1px -1px 0 #fff, 
+        -1px 1px 0 #fff, 
+        0 0 12px rgba(255, 255, 255, 0.9);
+    }
+
+    .tagline-presents {
+      font-family: var(--font-pixel);
+      font-size: clamp(7.5px, 1vw, 11px);
+      font-weight: 700;
+      letter-spacing: clamp(2px, 0.5vw, 4px);
+      color: #334155;
+      text-transform: uppercase;
+      text-shadow: 
+        1px 1px 0 #fff, 
+        -1px -1px 0 #fff, 
+        0 0 8px rgba(255, 255, 255, 0.9);
+      opacity: 0.95;
+    }
+
+    /* GIANT 3D BLOCK PIXEL "CELESTIA 4.0" LOGO */
+    .pv-logo-container {
+      position: relative;
+      margin-bottom: 12px;
+      max-width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      /* Shifted to the right so CELESTIA is the main center */
+      transform: translateX(var(--logo-center-shift, 0px));
+    }
+
+    /* The logo wrapper is masked and unveils as bird flies in front */
+    .pv-3d-logo-wrapper {
+      position: relative;
+      display: inline-block;
+      max-width: 100%;
+      clip-path: inset(0 calc(100% - var(--reveal-pct, 0%)) 0 0);
+      will-change: clip-path;
+    }
+
+    .pv-3d-logo-wrapper.revealed-complete {
+      clip-path: none !important;
+    }
+
+    .pv-3d-logo {
+      font-size: clamp(22px, 6.8vw, 96px);
+      font-weight: 900;
+      letter-spacing: clamp(1px, 0.7vw, 5px);
+      text-transform: uppercase;
+      display: inline-flex;
+      align-items: center;
+      gap: clamp(6px, 1.2vw, 14px);
+      cursor: pointer;
+      transition: transform 0.15s ease;
+      max-width: 100%;
+      white-space: nowrap;
+    }
+
+    .pv-3d-logo:hover {
+      transform: scale(1.03);
+    }
+
+    /* "CELESTIA" in 3D White/Silver Block */
+    .logo-word-celes {
+      color: #ffffff;
+      text-shadow: 
+        0 2px 0 #cbd5e1,
+        0 4px 0 #94a3b8,
+        0 6px 0 #64748b,
+        0 8px 0 #334155,
+        3px 8px 0 #0f172a,
+        -3px 0 0 #000,
+        3px 0 0 #000,
+        0 -3px 0 #000,
+        0 10px 0 #000,
+        5px 10px 0 #000,
+        -3px 10px 0 #000,
+        0 0 25px rgba(255, 255, 255, 0.7);
+    }
+
+    /* "4.0" in 3D Yellow/Gold Block (Slightly over half the size of CELESTIA) */
+    .logo-word-tia {
+      font-size: 0.56em;
+      align-self: flex-end;
+      margin-bottom: 0.10em;
+      color: #fde047;
+      text-shadow: 
+        0 2px 0 #facc15,
+        0 4px 0 #ca8a04,
+        0 5px 0 #854d0e,
+        2px 5px 0 #451a03,
+        -2px 0 0 #000,
+        2px 0 0 #000,
+        0 -2px 0 #000,
+        0 6.5px 0 #000,
+        3px 6.5px 0 #000,
+        -2px 6.5px 0 #000,
+        0 0 20px rgba(250, 204, 21, 0.8);
+    }
+
+    /* Bottom Sub-Tagline Container: Topic "GAME ON" & Action Motto */
+    .pv-hero-tagline-bottom {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: clamp(18px, 3vh, 26px);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      max-width: 95vw;
+    }
+
+    .pv-hero-tagline-bottom.revealed {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .tagline-topic {
+      font-family: var(--font-pixel);
+      font-size: clamp(16px, 2.8vw, 26px);
+      font-weight: 900;
+      letter-spacing: clamp(3px, 0.6vw, 7px);
+      color: #0f172a;
+      text-transform: uppercase;
+      text-shadow: 
+        2px 2px 0 #fff, 
+        -2px -2px 0 #fff, 
+        2px -2px 0 #fff, 
+        -2px 2px 0 #fff, 
+        0 0 16px rgba(255, 255, 255, 0.95);
+    }
+
+    .tagline-motto {
+      font-family: var(--font-pixel);
+      font-size: clamp(8px, 1.2vw, 12px);
+      font-weight: 700;
+      letter-spacing: clamp(2px, 0.45vw, 4.5px);
+      color: #1e293b;
+      text-transform: uppercase;
+      text-shadow: 
+        1px 1px 0 #fff, 
+        -1px -1px 0 #fff, 
+        1px -1px 0 #fff, 
+        -1px 1px 0 #fff, 
+        0 0 8px rgba(255, 255, 255, 0.85);
+    }
+
+    /* =========================================================
+       AUTHENTIC 8-BIT RETRO PIXEL BUTTON
+       ========================================================= */
+    .pv-btn-start-playing {
+      background: #facc15;
+      color: #0f172a;
+      font-family: var(--font-pixel);
+      font-size: clamp(10px, 1.4vw, 15px);
+      font-weight: bold;
+      letter-spacing: clamp(1px, 0.3vw, 2px);
+      padding: clamp(10px, 2vw, 16px) clamp(18px, 4vw, 36px);
+      text-transform: uppercase;
+      border: 4px solid #000;
+      border-radius: 0px; /* Authentic sharp 8-bit pixel corners */
+      box-shadow: 
+        inset -4px -4px 0px #854d0e,
+        inset 4px 4px 0px #fef08a,
+        4px 4px 0px #000,
+        0 8px 0 #5c3506,
+        0 12px 0 #000;
+      image-rendering: pixelated;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: clamp(8px, 1.5vw, 14px);
+      opacity: 0;
+      transform: scale(0.9);
+      transition: opacity 0.4s ease, transform 0.08s ease, box-shadow 0.08s ease, background 0.1s ease;
+      position: relative;
+      max-width: 92vw;
+      box-sizing: border-box;
+    }
+
+    .pv-btn-start-playing.revealed {
+      opacity: 1;
+      animation: pixelButtonBounce 1.5s infinite ease-in-out;
+    }
+
+    @keyframes pixelButtonBounce {
+      0%, 100% {
+        transform: translateY(0) scale(1);
+      }
+      22% {
+        transform: translateY(-9px) scale(1.03);
+      }
+      42% {
+        transform: translateY(0) scale(1);
+      }
+      58% {
+        transform: translateY(-4px) scale(1.01);
+      }
+      72% {
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .pv-btn-start-playing:hover {
+      animation-play-state: paused;
+      background: #fde047;
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 
+        inset -4px -4px 0px #a16207,
+        inset 4px 4px 0px #ffffff,
+        4px 4px 0px #000,
+        0 10px 0 #78350f,
+        0 14px 0 #000,
+        0 0 25px rgba(250, 204, 21, 0.7);
+    }
+
+    .pv-btn-start-playing:active {
+      animation-play-state: paused;
+      transform: translateY(6px);
+      box-shadow: 
+        inset -2px -2px 0px #854d0e,
+        inset 2px 2px 0px #ffffff,
+        2px 2px 0px #000;
+    }
+
+    .pixel-arrow {
+      display: inline-block;
+      font-size: 11px;
+      animation: arrowBlink 1s infinite steps(2, start);
+    }
+
+    @keyframes arrowBlink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* =========================================================
+       COMPREHENSIVE RESPONSIVE DESIGN (MOBILE & TABLET)
+       ========================================================= */
+    /* Tablets and Small Laptops */
+    @media (max-width: 768px) {
+      .celestia-world {
+        background-image: url('../assets/homepage/bg-mobile.jpg');
+        background-position: center center;
+      }
+      .pv-slingshot-container {
+        left: clamp(20px, 3.5vw, 36px);
+        top: clamp(45%, 50vh, 56%);
+        width: clamp(52px, 8.5vw, 72px);
+        height: clamp(80px, 13vw, 112px);
+      }
+      .pv-main-stage {
+        padding: 16px 12px;
+      }
+      .pv-hero-tagline-top {
+        margin-bottom: 20px;
+      }
+      .pv-3d-logo {
+        font-size: clamp(24px, 7vw, 50px);
+      }
+      .sun-shining-rays {
+        top: 32%;
+        left: 55%;
+        width: 420px;
+        height: 420px;
+      }
+      .sun-glow-overlay {
+        top: 32%;
+        left: 55%;
+        width: 180px;
+        height: 180px;
+      }
+    }
+
+    /* Standard Mobile Phones (iPhone 14/15, Galaxy, Pixel, etc.) */
+    @media (max-width: 600px) {
+      .celestia-world {
+  background-image: url('../assets/homepage/bg-mobile.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+      .pv-top-logo-img {
+        width: 42px;
+        height: 42px;
+      }
+      .pv-slingshot-container {
+        left: clamp(20px, 5.5vw, 28px);
+        top: clamp(46%, 52vh, 58%);
+        width: 50px;
+        height: 78px;
+      }
+      .pv-main-stage {
+        padding: 12px 10px;
+      }
+      .pv-3d-logo {
+        font-size: clamp(20px, 6.2vw, 36px);
+        letter-spacing: 1.5px;
+      }
+      .tagline-brand {
+        font-size: 9.5px;
+        letter-spacing: 2px;
+      }
+      .tagline-presents {
+        font-size: 7px;
+        letter-spacing: 2px;
+      }
+      .pv-hero-tagline-top {
+        margin-bottom: 18px;
+      }
+      .pv-hero-tagline-bottom {
+        gap: 5px;
+        margin-bottom: 16px;
+      }
+      .tagline-topic {
+        font-size: 15px;
+        letter-spacing: 3px;
+      }
+      .tagline-motto {
+        font-size: 8px;
+        letter-spacing: 2px;
+      }
+      .pv-btn-start-playing {
+        padding: 11px 20px;
+        font-size: 10px;
+        letter-spacing: 1px;
+      }
+      .pv-angry-bird-svg {
+        width: 60px;
+        height: 55px;
+      }
+      .sun-shining-rays {
+        top: 32%;
+        left: 55%;
+        width: 320px;
+        height: 320px;
+      }
+      .sun-glow-overlay {
+        top: 32%;
+        left: 55%;
+        width: 150px;
+        height: 150px;
+      }
+    }
+
+    /* Small Mobile Phones (iPhone SE, 360px Androids, 320px screens) */
+    @media (max-width: 400px) {
+      .celestia-world {
+  background-image: url('../assets/homepage/bg-mobile.jpg');
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+      .pv-top-logo-img {
+        width: 36px;
+        height: 36px;
+      }
+      .pv-slingshot-container {
+        left: clamp(18px, 5vw, 24px);
+        top: clamp(48%, 54vh, 60%);
+        width: 44px;
+        height: 68px;
+      }
+      .pv-3d-logo {
+        font-size: clamp(16px, 5.8vw, 24px);
+        letter-spacing: 1px;
+      }
+      .tagline-brand {
+        font-size: 8.5px;
+        letter-spacing: 1.5px;
+      }
+      .tagline-presents {
+        font-size: 6px;
+        letter-spacing: 1.5px;
+      }
+      .pv-hero-tagline-top {
+        margin-bottom: 14px;
+      }
+      .pv-hero-tagline-bottom {
+        gap: 4px;
+        margin-bottom: 12px;
+      }
+      .tagline-topic {
+        font-size: 12.5px;
+        letter-spacing: 2px;
+      }
+      .tagline-motto {
+        font-size: 7px;
+        letter-spacing: 1.5px;
+      }
+      /* Scaled 3D text shadow for ultra-sharp mobile rendering */
+      .logo-word-celes {
+        text-shadow: 
+          0 1px 0 #cbd5e1,
+          0 2px 0 #94a3b8,
+          0 3px 0 #64748b,
+          0 4px 0 #334155,
+          2px 4px 0 #0f172a,
+          -1px 0 0 #000,
+          1px 0 0 #000,
+          0 -1px 0 #000,
+          0 5px 0 #000,
+          3px 5px 0 #000,
+          -1px 5px 0 #000,
+          0 0 12px rgba(255, 255, 255, 0.7);
+      }
+      .logo-word-tia {
+        text-shadow: 
+          0 1px 0 #facc15,
+          0 2px 0 #ca8a04,
+          0 3px 0 #854d0e,
+          0 4px 0 #451a03,
+          2px 4px 0 #000,
+          -1px 0 0 #000,
+          1px 0 0 #000,
+          0 -1px 0 #000,
+          0 5px 0 #000,
+          3px 5px 0 #000,
+          -1px 5px 0 #000,
+          0 0 12px rgba(250, 204, 21, 0.8);
+      }
+      .pv-floating-badge {
+        font-size: 7.5px;
+        right: 0px;
+        top: -7px;
+        --badge-rot: 5deg;
+      }
+      .pv-hero-tagline-top {
+        font-size: 6.5px;
+        gap: 4px;
+        margin-bottom: 22px;
+      }
+      .pv-hero-tagline-bottom {
+        font-size: 6.5px;
+        gap: 4px;
+        margin-bottom: 14px;
+      }
+      .pv-btn-start-playing {
+        padding: 9px 15px;
+        font-size: 9px;
+      }
+      .pv-angry-bird-svg {
+        width: 50px;
+        height: 46px;
+      }
+      .sun-shining-rays {
+        top: 32%;
+        left: 55%;
+        width: 260px;
+        height: 260px;
+      }
+      .sun-glow-overlay {
+        top: 32%;
+        left: 55%;
+        width: 130px;
+        height: 130px;
+      }
+    }
