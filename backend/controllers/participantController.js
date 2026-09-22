@@ -7,8 +7,9 @@ import {
 } from "../utils/helpers.js";
 import {
   generateQRCode,
-  sendRegistrationEmail,
 } from "../utils/emailService.js";
+
+import { deliverRegistrationEmail } from '../utils/registrationEmail.js';
 
 export const registerParticipant = async (req, res) => {
   try {
@@ -57,9 +58,10 @@ export const registerParticipant = async (req, res) => {
     await participant.save();
 
     // The team is already saved: email failure must not invite a duplicate registration.
-    let emailSent = true;
-    try { await sendRegistrationEmail(leaderEmail, teamName, teamId, qrCode); }
-    catch { emailSent = false; }
+    let emailStatus = 'pending';
+    try { emailStatus = await deliverRegistrationEmail(participant._id); }
+    catch { emailStatus = 'unknown'; console.error('Team saved, but email delivery status could not be confirmed:', teamId); }
+    const emailSent = emailStatus === 'sent';
 
     res.status(201).json(
       formatResponse(
@@ -71,8 +73,9 @@ export const registerParticipant = async (req, res) => {
           teamSize,
           qrCode,
           emailSent,
+          emailStatus,
         },
-        emailSent ? "Registration successful! Check your email for QR code." : "Team registered. Email delivery failed; download the QR code.",
+        emailSent ? "Registration successful! Check your email for QR code." : "Team registered. Your QR email is awaiting delivery; you can download the QR code now.",
         201
       )
     );

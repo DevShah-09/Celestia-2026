@@ -22,7 +22,7 @@ export default function RegisterTeam() {
   }
   return <><h1>Register a team</h1><p>Create the team and its event QR code.</p>
     {error && <p className="portal-error" role="alert">{error}</p>}
-    {result && <div className="portal-success" role="status"><h2>Team registered</h2><p><strong>{result.teamName} · Team #{result.teamId}</strong></p><p>{result.emailSent === false ? 'Email could not be delivered. Download the QR code below and share it with the team.' : 'Registration email sent to the team leader.'}</p>{result.qrCode && <><img className="registration-qr" src={result.qrCode} alt={`QR code for team ${result.teamId}`} /><a className="portal-button" href={result.qrCode} download={`team-${result.teamId}-qr.png`}>Download QR code</a></>}</div>}
+    {result && <div className="portal-success" role="status"><h2>Team registered</h2><p><strong>{result.teamName} · Team #{result.teamId}</strong></p><p>{result.emailSent ? 'Registration email sent to the team leader.' : result.emailStatus === 'pending' || result.emailStatus === 'sending' ? 'Your QR email is awaiting delivery. You can download the QR code now.' : 'Email could not be delivered or confirmed. Download the QR code below; the team is already registered.'}</p>{result.qrCode && <><img className="registration-qr" src={result.qrCode} alt={`QR code for team ${result.teamId}`} /><a className="portal-button" href={result.qrCode} download={`team-${result.teamId}-qr.png`}>Download QR code</a></>}</div>}
     <form className="portal-form" onSubmit={submit}><fieldset disabled={busy} className="portal-fields">
       <label>Team name<input name="teamName" required maxLength={150} /></label>
       <label>Leader name<input name="leaderName" required maxLength={150} autoComplete="name" /></label>

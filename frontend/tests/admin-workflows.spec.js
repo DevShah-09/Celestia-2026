@@ -149,3 +149,15 @@ test('expired token during a write hides organizer forms', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Session expired' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Submit scores' })).toHaveCount(0);
 });
+
+test('registration with deferred email shows pending delivery and a downloadable QR', async ({ page }) => {
+  await page.route('**/api/participants/register', route => reply(route, { ...team, emailSent: false, emailStatus: 'pending', qrCode: 'data:image/png;base64,iVBORw0KGgo=' }, 201));
+  await page.goto('/admin/register');
+  await page.getByLabel('Team name', { exact: true }).fill(team.teamName);
+  await page.getByLabel('Leader name').fill('Avery');
+  await page.getByLabel('Leader email').fill('avery@example.com');
+  await page.getByLabel('Team size').fill('4');
+  await page.getByRole('button', { name: 'Register team', exact: true }).click();
+  await expect(page.getByRole('status')).toContainText('Your QR email is awaiting delivery');
+  await expect(page.getByRole('link', { name: 'Download QR code' })).toBeVisible();
+});

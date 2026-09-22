@@ -37,7 +37,7 @@ export default function CsvRegistration() {
         update({ status: 'Registering' });
         try {
           const result = await request('/participants/register', { body: row.body, timeoutMs: 45000 });
-          update({ status: 'Registered', result, message: result.emailSent ? 'Email sent' : 'Email unavailable; download QR code' });
+          update({ status: 'Registered', result, message: result.emailSent ? 'Email sent' : result.emailStatus === 'pending' || result.emailStatus === 'sending' ? 'Email pending; QR ready to download' : 'Email not confirmed; download QR code' });
         } catch (failure) {
           const knownFailure = [400, 401, 403, 409, 422].includes(failure.status);
           update({ status: knownFailure ? 'Failed' : 'Check team directory', message: failure.message });

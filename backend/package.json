@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "test": "node --test",
-    "start": "nodemon index.js",
-    "dev": "nodemon index.js"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "emails:send": "node scripts/sendPendingEmails.js"
   },
   "keywords": [],
   "author": "",

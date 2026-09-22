@@ -200,6 +200,11 @@ const participantSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    // Missing on historical teams: these are deliberately excluded from automatic delivery.
+    emailStatus: { type: String, enum: ['pending', 'sending', 'sent', 'failed'], default: 'pending', index: true },
+    emailSentAt: { type: Date, default: null },
+    emailAttemptedAt: { type: Date, default: null },
+    emailAttempts: { type: Number, default: 0 },
     qrCode: {
       type: String,
       required: true,

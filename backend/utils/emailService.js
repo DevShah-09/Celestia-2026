@@ -3,21 +3,14 @@ import QRCode from "qrcode";
 import dotenv from "dotenv";
 dotenv.config();
 
-// Validate environment variables
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-  console.error("⚠️  EMAIL_USER and EMAIL_PASS must be set in .env file");
-}
+export const isEmailConfigured = () => Boolean(process.env.EMAIL_USER?.trim() && process.env.EMAIL_PASS?.trim());
 
-const transporter = nodemailer.createTransport({
+const createTransporter = () => nodemailer.createTransport({
   service: "gmail",
-  host: "smtp.gmail.com",
   connectionTimeout: 8000,
   greetingTimeout: 8000,
   socketTimeout: 8000,
-  auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASS,
-  },
+  auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
 });
 
 export const generateQRCode = async (teamId) => {
@@ -49,7 +42,7 @@ export const sendRegistrationEmail = async (
   teamId,
   qrCode
 ) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) throw new Error('Email delivery is not configured');
+  if (!isEmailConfigured()) throw new Error('Email delivery is not configured');
   try {
     // Extract base64 data from data URL
     const base64Data = qrCode.replace(/^data:image\/png;base64,/, "");
@@ -132,7 +125,7 @@ This is an automated email from Celestia 2026. Please do not reply.`,
       ],
     };
 
-    const info = await transporter.sendMail(mailOptions);
+    const info = await createTransporter().sendMail(mailOptions);
     console.log("✅ Email sent successfully:", info.messageId);
     console.log("📧 Email sent to:", leaderEmail);
     return true;

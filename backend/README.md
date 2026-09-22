@@ -32,5 +32,15 @@ can be selected within 10 seconds, instead of accepting requests that time out.
    (usually TCP port 27017).
 5. Run run-backend.cmd again. Expect MongoDB Connected before Server is running.
 
-The EMAIL_USER / EMAIL_PASS warning concerns email setup separately and does not
-cause the MongoDB connection failure.
+## Deployment and local email delivery
+
+See [DEPLOYMENT.md](../DEPLOYMENT.md) for frontend/backend hosting settings.
+
+Email credentials are optional. Without both EMAIL_USER and EMAIL_PASS, registration succeeds and its QR email remains pending. To send later, point local backend/.env at the same production database, add the email credentials, then run:
+
+~~~sh
+npm run emails:send -- --dry-run
+npm run emails:send
+~~~
+
+This uses saved QR codes and skips sent teams. Historical teams without tracking and interrupted sends require review; see the deployment guide.
