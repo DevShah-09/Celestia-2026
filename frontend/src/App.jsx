@@ -10,6 +10,7 @@ import RegisterTeam from './pages/RegisterTeam';
 import Scoring from './pages/Scoring';
 import BulkScoring from './pages/BulkScoring';
 import Games from './pages/Games';
+import ArcadeGames from './pages/ArcadeGames';
 import Admins from './pages/Admins';
 import Teams from './pages/Teams';
 import History from './pages/History';
@@ -21,6 +22,7 @@ export default function App() {
     <SessionProvider><BrowserRouter>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/games" element={<ArcadeGames />} />
         <Route path="/leaderboard" element={<LeaderboardPage />} />
         <Route path="/login" element={<Login key="participant" />} />
         <Route path="/admin/login" element={<Login key="admin" adminLogin />} />

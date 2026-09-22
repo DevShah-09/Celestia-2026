@@ -68,3 +68,8 @@ html, body { height: auto; }
 .table-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 .table-actions .portal-button { padding: 8px 12px; font-size: 14px; }
 .portal-table-wrap { max-width: 100%; }
+
+.arcade-game-card { margin-top: 28px; padding: 28px; max-width: 400px; border: 2px solid var(--pixel-cyan); border-radius: 12px; background: #0c3263; }
+.arcade-game-card > svg { color: var(--pixel-yellow); }
+.arcade-game-card h2 { margin: 16px 0 24px; font-family: 'Silkscreen', monospace; }
+.arcade-game-card .portal-button:focus-visible { outline: 3px solid var(--pixel-cyan-bright); outline-offset: 4px; }

@@ -18,3 +18,19 @@ npm run dev
 ```
 
 Use the runner when the Atlas connection reports `querySrv ECONNREFUSED`.
+
+## MongoDB connection fails
+
+The API starts listening only after MongoDB connects. Startup stops if no server
+can be selected within 10 seconds, instead of accepting requests that time out.
+
+1. In MongoDB Atlas, confirm your cluster is running.
+2. Under Network Access / IP Access List, add your current public IP and wait for
+   the entry to become active. Switching Wi-Fi or VPN can change your public IP.
+3. Verify MONGODB_URI in backend/.env uses the correct cluster and database user.
+4. Check whether your firewall or network blocks outbound MongoDB connections
+   (usually TCP port 27017).
+5. Run run-backend.cmd again. Expect MongoDB Connected before Server is running.
+
+The EMAIL_USER / EMAIL_PASS warning concerns email setup separately and does not
+cause the MongoDB connection failure.
