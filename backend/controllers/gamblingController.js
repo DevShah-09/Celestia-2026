@@ -5,14 +5,14 @@ import { formatResponse, handleError } from "../utils/helpers.js";
 
 // ==================== AUCTION GAME ENDPOINTS ====================
 
-// Place a bet on an auction cup
+// Place a bet on an auction token
 export const placeAuctionBet = async (req, res) => {
     try {
         const { teamId, gameId, cupNumber, pointsBet } = req.body;
 
         if (!teamId || !gameId || !cupNumber || !pointsBet) {
             return res.status(400).json(
-                formatResponse(null, "Team ID, game ID, cup number, and points bet are required", 400)
+                formatResponse(null, "Team ID, game ID, token number, and points bet are required", 400)
             );
         }
 
@@ -22,9 +22,9 @@ export const placeAuctionBet = async (req, res) => {
             );
         }
 
-        if (!Number.isInteger(cupNumber) || cupNumber < 1 || cupNumber > 4) {
+        if (!Number.isInteger(cupNumber) || cupNumber < 1 || cupNumber > 6) {
             return res.status(400).json(
-                formatResponse(null, "Cup number must be between 1 and 4", 400)
+                formatResponse(null, "Token number must be between 1 and 6", 400)
             );
         }
 
@@ -103,16 +103,16 @@ export const placeAuctionBet = async (req, res) => {
 export const revealAuctionResults = async (req, res) => {
     try {
         const { gameId, cupMultipliers } = req.body;
-        // cupMultipliers should be an object like: { "1": 0, "2": 0.5, "3": 1.5, "4": 2 }
+        // cupMultipliers should be an object like: { "1": 0, "2": 0.5, "3": 1.5, "4": 2, "5": 3, "6": 2.5 }
 
         if (!gameId || !cupMultipliers) {
             return res.status(400).json(
-                formatResponse(null, "Game ID and cup multipliers are required", 400)
+                formatResponse(null, "Game ID and token multipliers are required", 400)
             );
         }
 
-        if (typeof cupMultipliers !== 'object' || Array.isArray(cupMultipliers) || Object.keys(cupMultipliers).sort().join(',') !== '1,2,3,4') {
-            return res.status(400).json(formatResponse(null, "Provide multipliers for cups 1, 2, 3 and 4", 400));
+        if (typeof cupMultipliers !== 'object' || Array.isArray(cupMultipliers) || Object.keys(cupMultipliers).sort().join(',') !== '1,2,3,4,5,6') {
+            return res.status(400).json(formatResponse(null, "Provide multipliers for tokens 1, 2, 3, 4, 5 and 6", 400));
         }
         if (Object.values(cupMultipliers).some(value => typeof value !== 'number' || !Number.isFinite(value) || value < 0)) {
             return res.status(400).json(formatResponse(null, "Multipliers must be finite numbers greater than or equal to zero", 400));
@@ -260,7 +260,7 @@ export const getAllAuctionBets = async (req, res) => {
             betTimestamp: p.activeGamblingGame.betPlacedAt,
         }));
 
-        // Group by cup number
+        // Group by token number
         const betsByCup = {};
         bets.forEach((bet) => {
             if (!betsByCup[bet.cupNumber]) {

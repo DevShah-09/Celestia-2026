@@ -36,7 +36,7 @@ const gameSchema = new mongoose.Schema(
     auctionConfig: {
       numberOfCups: {
         type: Number,
-        default: 4,
+        default: 6,
         min: 2,
         max: 10,
       },
@@ -48,6 +48,8 @@ const gameSchema = new mongoose.Schema(
           2: null,
           3: null,
           4: null,
+          5: null,
+          6: null,
         },
       },
       auctionCompleted: {

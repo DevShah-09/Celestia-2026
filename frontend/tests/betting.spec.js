@@ -14,14 +14,14 @@ test('auction betting deducts, refunds and displays settlement', async ({ page }
     if (path.endsWith('/bet')) {
       const body = route.request().postDataJSON();
       expect(body.pointsBet).toBe(100); expect(body.teamId).toBe(1000);
-      expect(body.cupNumber).toBe(1);
+      expect(body.cupNumber).toBe(6);
       balance -= body.pointsBet; active = { ...body, gameName: 'Betting Round', gameType: 'auction' };
       return reply(route, { remainingPoints: balance });
     }
     if (path.endsWith('/cancel-bet')) { balance += active.pointsBet; active = null; return reply(route, { refundedPoints: 100 }); }
     if (path.endsWith('/reveal')) {
       const body = route.request().postDataJSON();
-      expect(body.cupMultipliers).toEqual({ 1: 2.75, 2: 2.75, 3: 1.25, 4: 0 });
+      expect(body.cupMultipliers).toEqual({ 1: 2.75, 2: 2.75, 3: 1.25, 4: 0, 5: 4, 6: 2.75 });
       const multiplier = 2.75;
       balance += 100 * multiplier; active = null; completed = true;
       const row = { teamId: 1000, teamName: 'Team One', pointsBet: 100, multiplier, pointsAwarded: 100 * multiplier, netChange: 100 * multiplier - 100, totalPoints: balance };
@@ -34,6 +34,8 @@ test('auction betting deducts, refunds and displays settlement', async ({ page }
   await page.getByLabel('Team ID').fill('1000');
   await page.getByRole('button', { name: 'Check team' }).click();
   await expect(page.getByText('Available points: 1000')).toBeVisible();
+  await expect(page.getByRole('combobox', { name: 'Tokens', exact: true }).locator('option')).toHaveCount(6);
+  await page.getByRole('combobox', { name: 'Tokens', exact: true }).selectOption('6');
   await page.getByLabel('Points to bet').fill('100');
   await page.getByRole('button', { name: 'Place bet and deduct points' }).click();
   await expect(page.getByText('Available points: 900')).toBeVisible();
@@ -43,9 +45,9 @@ test('auction betting deducts, refunds and displays settlement', async ({ page }
   await page.getByRole('button', { name: 'Place bet and deduct points' }).click();
   await page.getByRole('button', { name: 'Review results' }).click();
   await expect(page.getByRole('alert')).toContainText('Enter a custom multiplier');
-  for (const [index, value] of ['2.75', '2.75', '1.25', '0'].entries()) {
-    await expect(page.getByLabel('Cup ' + (index + 1) + ' multiplier')).toHaveAttribute('type', 'number');
-    await page.getByLabel('Cup ' + (index + 1) + ' multiplier').fill(value);
+  for (const [index, value] of ['2.75', '2.75', '1.25', '0', '4', '2.75'].entries()) {
+    await expect(page.getByLabel('Token ' + (index + 1) + ' multiplier')).toHaveAttribute('type', 'number');
+    await page.getByLabel('Token ' + (index + 1) + ' multiplier').fill(value);
   }
   await page.getByRole('button', { name: 'Review results' }).click();
   await page.getByRole('button', { name: 'Confirm results and update points' }).click();
@@ -70,6 +72,6 @@ test('old auction-round link redirects to the only betting page', async ({ page 
   await page.route('**/api/**', route => reply(route, route.request().url().endsWith('/admin/profile') ? { name: 'Organizer', role: 'admin' } : []));
   await page.goto('/admin/betting/rounds');
   await expect(page).toHaveURL(/\/admin\/betting$/);
-  await expect(page.getByRole('heading', { name: 'Auction cup betting' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Auction token betting' })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Add team', exact: true })).toHaveCount(0);
 });

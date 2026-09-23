@@ -54,7 +54,7 @@ export default function Scoring() {
     finally { inFlight.current = false; setBusy(false); }
   }
   return <><h1>Record game score</h1><p>Choose a game, verify the team, then award its points.</p>
-    <Link className="portal-link" to="/admin/betting">Open auction cup rounds →</Link>
+    <Link className="portal-link" to="/admin/betting">Open auction token rounds →</Link>
     <div className="portal-form"><label>Scoring action<select value={mode} disabled={busy} onChange={event => { setMode(event.target.value); setVerified(null); setQrData(null); setScanning(false); setResult(null); setError(''); }}><option value="award">Award game points</option><option value="deduct">Deduct points</option></select></label>
       {mode === 'award' ? <GameSelect value={gameId} disabled={busy} onChange={(id, selected) => { setGameId(id); setGame(selected); setResult(null); }} /> : <><label>Points to deduct<input type="number" min="1" step="1" value={points} disabled={busy} onChange={event => setPoints(event.target.value)} /></label><label>Deduction reason<input maxLength={300} value={reason} disabled={busy} onChange={event => setReason(event.target.value)} /></label></>}
       <form className="portal-fields" onSubmit={event => { event.preventDefault(); verify(); }}><label>Team ID<input inputMode="numeric" pattern="[0-9]+" required value={teamId} disabled={busy || scanning} onChange={event => { setTeamId(event.target.value); setVerified(null); setQrData(null); setResult(null); }} /></label><button className="portal-button secondary" disabled={busy || scanning}>Verify team</button></form>
