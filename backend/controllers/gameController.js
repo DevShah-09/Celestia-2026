@@ -3,7 +3,8 @@ import { formatResponse, handleError } from "../utils/helpers.js";
 
 export const createGame = async (req, res) => {
   try {
-    const { gameName, gamePoints, description } = req.body;
+    const { gameName, gamePoints, description, gameType = 'regular' } = req.body;
+    if (!['regular', 'auction'].includes(gameType)) return res.status(400).json(formatResponse(null, 'Invalid game type', 400));
 
     if (!gameName || !gamePoints) {
       return res
@@ -20,6 +21,7 @@ export const createGame = async (req, res) => {
 
     const game = new Game({
       gameName,
+      gameType,
       gamePoints,
       description,
       createdBy: {
@@ -49,7 +51,7 @@ export const createGame = async (req, res) => {
 export const getAllGames = async (req, res) => {
   try {
     const games = await Game.find({ isActive: true })
-      .select("gameName gamePoints description createdBy updatedBy")
+      .select("gameName gamePoints description createdBy updatedBy gameType auctionConfig")
       .sort({ gameName: 1 });
 
     res.json(formatResponse(games, "Games retrieved successfully"));

@@ -9,6 +9,7 @@ export default function Games() {
   const [retry, setRetry] = useState(0);
   const [gameName, setGameName] = useState('');
   const [gamePoints, setGamePoints] = useState('');
+  const [gameType, setGameType] = useState('regular');
   const [description, setDescription] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -37,7 +38,7 @@ export default function Games() {
     }
     inFlight.current = true; setBusy(true);
     try {
-      const game = await request(editing ? `/games/${editing}` : '/games', { method: editing ? 'PUT' : 'POST', body: { gameName: gameName.trim(), gamePoints: points, description: description.trim() } });
+      const game = await request(editing ? `/games/${editing}` : '/games', { method: editing ? 'PUT' : 'POST', body: { gameName: gameName.trim(), gamePoints: points, ...(!editing && { gameType }), description: description.trim() } });
       setGames(previous => [...previous.filter(item => item._id !== game._id), game].sort((a, b) => a.gameName.localeCompare(b.gameName)));
       setSuccess(editing ? `${game.gameName} updated.` : `${game.gameName} created. It is now available for scoring.`);
       setEditing(null);
@@ -47,7 +48,7 @@ export default function Games() {
   }
 
   function edit(game) {
-    setEditing(game._id); setGameName(game.gameName); setGamePoints(String(game.gamePoints)); setDescription(game.description || ''); setSuccess(''); setError('');
+    setGameType(game.gameType || 'regular'); setEditing(game._id); setGameName(game.gameName); setGamePoints(String(game.gamePoints)); setDescription(game.description || ''); setSuccess(''); setError('');
     document.getElementById('game-editor')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
   async function deactivate() {
@@ -69,6 +70,7 @@ export default function Games() {
     <form className="portal-form" onSubmit={submit}>
       <fieldset className="portal-fields" disabled={busy || loading || !!loadError}>
         <label>Game name<input required value={gameName} onChange={event => setGameName(event.target.value)} /></label>
+        <label>Game type<select value={gameType} disabled={!!editing} onChange={event => setGameType(event.target.value)}><option value="regular">Regular scoring</option><option value="auction">Auction</option></select></label>
         <label>Points per completion<input required type="number" min="1" step="1" value={gamePoints} onChange={event => setGamePoints(event.target.value)} /></label>
         <label>Description (optional)<textarea rows={3} value={description} onChange={event => setDescription(event.target.value)} /></label>
         <button className="portal-button" type="submit">{busy ? 'Saving...' : editing ? 'Save game' : 'Create game'}</button>
@@ -81,7 +83,7 @@ export default function Games() {
     <h2>Active games</h2>
     {loading ? <p role="status">Loading games...</p> : loadError ? <p className="portal-error" role="alert">{loadError} <button onClick={() => setRetry(value => value + 1)}>Retry</button></p> : games.length === 0 ? <p>No games yet. Create your first game above.</p> :
       <div className="portal-table-wrap"><table className="portal-table"><caption className="portal-muted">Games available for scoring</caption><thead><tr><th scope="col">Game</th><th scope="col">Points</th><th scope="col">Actions</th></tr></thead>
-        <tbody>{games.map(game => <tr key={game._id}><td>{game.gameName}{game.description && <small>{game.description}</small>}</td><td>{game.gamePoints}</td><td><div className="table-actions"><button className="portal-button secondary" disabled={busy} onClick={() => edit(game)}>Edit {game.gameName}</button><button className="portal-button secondary" disabled={busy} onClick={() => setPending(game)}>Deactivate {game.gameName}</button></div></td></tr>)}</tbody>
+        <tbody>{games.map(game => <tr key={game._id}><td>{game.gameName}{game.description && <small>{game.description}</small>}</td><td>{game.gameType && game.gameType !== 'regular' ? game.gameType : game.gamePoints}</td><td><div className="table-actions"><button className="portal-button secondary" disabled={busy} onClick={() => edit(game)}>Edit {game.gameName}</button><button className="portal-button secondary" disabled={busy} onClick={() => setPending(game)}>Deactivate {game.gameName}</button></div></td></tr>)}</tbody>
       </table></div>}
   </>;
 }

@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Betting from './pages/Betting';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import Home from "./pages/Home";
 import { LeaderboardPage } from "./pages/LeaderboardPage";
@@ -33,6 +34,8 @@ export default function App() {
           <Route path="scoring" element={<Scoring />} />
           <Route path="bulkupdate" element={<BulkScoring />} />
           <Route path="games" element={<Games />} />
+          <Route path="betting" element={<Betting />} />
+          <Route path="betting/rounds" element={<Navigate to="/admin/betting" replace />} />
           <Route path="admins" element={<Admins />} />
           <Route path="teams" element={<Teams />} />
           <Route path="history" element={<History />} />
